@@ -121,26 +121,30 @@ class Pipeline(object):
             if not os.path.exists(ground_truth_directory):
                 raise IOError("The ground truth source directory you specified does not exist.")
 
-        # Get absolute path for output
-        abs_output_directory = os.path.join(source_directory, output_directory)
+        if output_directory is not None:
+            # Get absolute path for output
+            abs_output_directory = os.path.join(source_directory, output_directory)
+        else:
+            abs_output_directory = None
 
         # Scan the directory that user supplied.
         self.augmentor_images, self.class_labels = scan(source_directory, abs_output_directory)
 
-        # Make output directory/directories
-        if len(self.class_labels) <= 1:  # This may be 0 in the case of a folder generated
-            if not os.path.exists(abs_output_directory):
-                try:
-                    os.makedirs(abs_output_directory)
-                except IOError:
-                    print("Insufficient rights to read or write output directory (%s)" % abs_output_directory)
-        else:
-            for class_label in self.class_labels:
-                if not os.path.exists(os.path.join(abs_output_directory, str(class_label[0]))):
+        if abs_output_directory is not None:
+            # Make output directory/directories
+            if len(self.class_labels) <= 1:  # This may be 0 in the case of a folder generated
+                if not os.path.exists(abs_output_directory):
                     try:
-                        os.makedirs(os.path.join(abs_output_directory, str(class_label[0])))
+                        os.makedirs(abs_output_directory)
                     except IOError:
                         print("Insufficient rights to read or write output directory (%s)" % abs_output_directory)
+            else:
+                for class_label in self.class_labels:
+                    if not os.path.exists(os.path.join(abs_output_directory, str(class_label[0]))):
+                        try:
+                            os.makedirs(os.path.join(abs_output_directory, str(class_label[0])))
+                        except IOError:
+                            print("Insufficient rights to read or write output directory (%s)" % abs_output_directory)
 
         # Check the images, read their dimensions, and remove them if they cannot be read
         # TODO: Do not throw an error here, just remove the image and continue.
@@ -157,8 +161,9 @@ class Pipeline(object):
 
         # Finally, we will print some informational messages.
 
-        sys.stdout.write("Initialised with %s image(s) found.\n" % len(self.augmentor_images))
-        sys.stdout.write("Output directory set to %s." % abs_output_directory)
+        # sys.stdout.write("Initialised with %s image(s) found.\n" % len(self.augmentor_images))
+        # if abs_output_directory is not None:
+        #     sys.stdout.write("Output directory set to %s." % abs_output_directory)
 
         #print("Initialised with %s image(s) found in selected directory." % len(self.augmentor_images))
         #print("Output directory set to %s." % abs_output_directory)

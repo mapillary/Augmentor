@@ -183,7 +183,10 @@ def extract_paths_and_extensions(image_path):
 
 def scan(source_directory, output_directory):
 
-    abs_output_directory  = os.path.abspath(output_directory)
+    if output_directory is not None:
+        abs_output_directory  = os.path.abspath(output_directory)
+    else:
+        abs_output_directory = None
     files_and_directories = glob.glob(os.path.join(os.path.abspath(source_directory), '*'))
 
     directory_count = 0
@@ -222,7 +225,10 @@ def scan(source_directory, output_directory):
         augmentor_images = []
 
         for d in directories:
-            output_directory = os.path.join(abs_output_directory, os.path.split(d)[1])
+            if abs_output_directory is not None:
+                output_directory = os.path.join(abs_output_directory, os.path.split(d)[1])
+            else:
+                output_directory = None
             for image_path in scan_directory(d):
                 categorical_label = np.zeros(directory_count, dtype=np.uint32)
                 a = AugmentorImage(image_path=image_path, output_directory=output_directory)

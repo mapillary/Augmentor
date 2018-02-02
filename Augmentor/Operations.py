@@ -1427,25 +1427,24 @@ class ZoomRandom(Operation):
     This class is used to zoom into random areas of the image.
     """
 
-    def __init__(self, probability, percentage_area, randomise):
+    def __init__(self, probability, min_zoom, max_zoom=None):
         """
         Zooms into a random area of the image, rather than the centre of
         the image, as is done by :class:`Zoom`. The zoom factor is fixed
-        unless :attr:`randomise` is set to ``True``.
+        unless :attr:`max_zoom` is given.
         
         :param probability: Controls the probability that the operation is 
          performed when it is invoked in the pipeline. 
-        :param percentage_area: A value between 0.1 and 1 that represents the
+        :param min_zoom: A value between 0.1 and 1 that represents the
          area that will be cropped, with 1 meaning the entire area of the
          image will be cropped and 0.1 mean 10% of the area of the image 
          will be cropped, before zooming.
-        :param randomise: If ``True``, uses the :attr:`percentage_area` as an 
-         upper bound, and randomises the zoom level from between 0.1 and 
-         :attr:`percentage_area`. 
+        :param max_zoom: If set, the effective zoom value will be randomly
+         chosen between :attr:`min_zoom` and :attr:`max_zoom`
         """
         Operation.__init__(self, probability)
-        self.percentage_area = percentage_area
-        self.randomise = randomise
+        self.min_zoom = min_zoom
+        self.max_zoom = max_zoom
 
     def perform_operation(self, image):
         """
@@ -1460,10 +1459,10 @@ class ZoomRandom(Operation):
         :return: The cropped area as an image of type PIL.Image
         """
 
-        if self.randomise:
-            r_percentage_area = round(random.uniform(0.1, self.percentage_area), 2)
+        if self.max_zoom:
+            r_percentage_area = round(random.uniform(self.min_zoom, self.max_zoom), 2)
         else:
-            r_percentage_area = self.percentage_area
+            r_percentage_area = self.min_zoom
 
         w, h = image.size
         w_new = int(floor(w * r_percentage_area))  # TODO: Floor might return 0, so we need to check this.

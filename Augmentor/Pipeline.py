@@ -926,7 +926,7 @@ class Pipeline(object):
         else:
             self.add_operation(Zoom(probability=probability, min_factor=min_factor, max_factor=max_factor))
 
-    def zoom_random(self, probability, percentage_area, randomise_percentage_area=False):
+    def zoom_random(self, probability, min_zoom, max_zoom=None):
         """
         Zooms into an image at a random location within the image.
 
@@ -937,21 +937,22 @@ class Pipeline(object):
 
         :param probability: The probability that the function will execute
          when the image is passed through the pipeline.
-        :param percentage_area: The area, as a percentage of the current
+        :param min_zoom: The area, as a percentage of the current
          image's area, to crop.
-        :param randomise_percentage_area: If True, will use
-         :attr:`percentage_area` as an upper bound and randomise the crop from
-         between 0 and :attr:`percentage_area`.
+        :param max_zoom: If given, randomise the crop from
+         between :attr:`min_zoom` and :attr:`max_zoom`.
         :return: None
         """
         if not 0 < probability <= 1:
             raise ValueError(Pipeline._probability_error_text)
-        elif not 0.1 <= percentage_area < 1:
-            raise ValueError("The percentage_area argument must be greater than 0.1 and less than 1.")
-        elif not isinstance(randomise_percentage_area, bool):
-            raise ValueError("The randomise_percentage_area argument must be True or False.")
+        elif not 0.1 <= min_zoom < 1:
+            raise ValueError("The min_zoom argument must be greater than 0.1 and less than 1.")
+        elif not 0.1 <= max_zoom < 1:
+            raise ValueError("The max_zoom argument must be greater than 0.1 and less than 1.")
+        elif not min_zoom < max_zoom:
+            raise ValueError("The min_zoom argument must be less than the max_zoom argument.")
         else:
-            self.add_operation(ZoomRandom(probability=probability, percentage_area=percentage_area, randomise=randomise_percentage_area))
+            self.add_operation(ZoomRandom(probability=probability, min_zoom=min_zoom, max_zoom=max_zoom))
 
     def crop_by_size(self, probability, width, height, centre=True):
         """

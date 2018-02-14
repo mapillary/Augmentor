@@ -1,0 +1,6 @@
+Augmentor, 0.1.10, MIT
+Pillow, 4.3.0, "Standard PIL License"
+future, 0.16.0, MIT
+numpy, 1.14.0, BSD
+olefile, 0.44, BSD
+tqdm, 4.11.2, "MPLv2.0, MIT Licences"

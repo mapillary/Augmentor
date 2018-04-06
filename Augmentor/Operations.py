@@ -736,7 +736,7 @@ class Crop(Operation):
         #    )
 
 
-ass CropPercentage(Operation):
+class CropPercentage(Operation):
     """
     This class is used to crop images by a percentage of their area.
     """

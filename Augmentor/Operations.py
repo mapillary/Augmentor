@@ -736,23 +736,23 @@ class Crop(Operation):
         #    )
 
 
-class CropPercentage(Operation):
+ass CropPercentage(Operation):
     """
     This class is used to crop images by a percentage of their area.
     """
-    def __init__(self, probability, percentage_area, centre, randomise_percentage_area):
+    def __init__(self, probability, percentage_area, centre, randomise_percentage_area, min_percentage_area=0.1):
         """
-        As well as the always required :attr:`probability` parameter, the 
+        As well as the always required :attr:`probability` parameter, the
         constructor requires a :attr:`percentage_area` to control the area
-        of the image to crop in terms of its percentage of the original image, 
+        of the image to crop in terms of its percentage of the original image,
         and a :attr:`centre` parameter toggle whether a random area or the
         centre of the images should be cropped.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
-        :param percentage_area: The percentage area of the original image 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
+        :param percentage_area: The percentage area of the original image
          to crop. A value of 0.5 would crop an area that is 50% of the area
-         of the original image's size. 
+         of the original image's size.
         :param centre: Whether to crop from the centre of the image or
          crop a random location within the image.
         :type probability: Float
@@ -763,19 +763,20 @@ class CropPercentage(Operation):
         self.percentage_area = percentage_area
         self.centre = centre
         self.randomise_percentage_area = randomise_percentage_area
+        self.min_percentage_area = min_percentage_area
 
     def perform_operation(self, image):
         """
-        Crop the passed :attr:`image` by percentage area, returning the crop as an 
+        Crop the passed :attr:`image` by percentage area, returning the crop as an
         image.
-        
+
         :param image: The image to crop an area from.
         :type image: PIL.Image
         :return: The cropped area as an image of type PIL.Image
         """
 
         if self.randomise_percentage_area:
-            r_percentage_area = round(random.uniform(0.1, self.percentage_area), 2)
+            r_percentage_area = round(random.uniform(self.min_percentage_area, self.percentage_area), 2)
         else:
             r_percentage_area = self.percentage_area
 
@@ -789,7 +790,6 @@ class CropPercentage(Operation):
             left_shift = random.randint(0, int((w - w_new)))
             down_shift = random.randint(0, int((h - h_new)))
             return image.crop((left_shift, down_shift, w_new + left_shift, h_new + down_shift))
-
 
 class CropRandom(Operation):
     """

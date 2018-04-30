@@ -307,6 +307,14 @@ class Skew(Operation):
         #    skew_amount = max_skew_amount
 
         # TODO: Fix this abomination
+        if self.skew_type == "RANDOM":
+            skew = random.choice(["TILT", "TILT_LEFT_RIGHT", "TILT_TOP_BOTTOM", "CORNER", "TILT_TOP"])
+        else:
+            skew = self.skew_type
+
+        # We have two choices now: we tilt in one of four directions
+        # or we skew a corner.
+
         if skew == "TILT" or skew == "TILT_LEFT_RIGHT" or skew == "TILT_TOP_BOTTOM" or skew == "TILT_TOP" or skew == "TILT_BOTTOM":
 
             if skew == "TILT":

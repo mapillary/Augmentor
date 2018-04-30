@@ -2,20 +2,20 @@
 # Author: Marcus D. Bloice <https://github.com/mdbloice>
 # Licensed under the terms of the MIT Licence.
 """
-The Operations module contains classes for all operations used by Augmentor. 
+The Operations module contains classes for all operations used by Augmentor.
 
 The classes contained in this module are not called or instantiated directly
-by the user, instead the user interacts with the 
-:class:`~Augmentor.Pipeline.Pipeline` class and uses the utility functions contained 
-there. 
- 
+by the user, instead the user interacts with the
+:class:`~Augmentor.Pipeline.Pipeline` class and uses the utility functions contained
+there.
+
 In this module, each operation is a subclass of type :class:`Operation`.
-The :class:`~Augmentor.Pipeline.Pipeline` objects expect :class:`Operation` 
-types, and therefore all operations are of type :class:`Operation`, and 
+The :class:`~Augmentor.Pipeline.Pipeline` objects expect :class:`Operation`
+types, and therefore all operations are of type :class:`Operation`, and
 provide their own implementation of the :func:`~Operation.perform_operation`
 function.
- 
-Hence, the documentation for this module is intended for developers who 
+
+Hence, the documentation for this module is intended for developers who
 wish to extend Augmentor or wish to see how operations function internally.
 
 For detailed information on extending Augmentor, see :ref:`extendingaugmentor`.
@@ -46,39 +46,39 @@ import warnings
 class Operation(object):
     """
     The class :class:`Operation` represents the base class for all operations
-    that can be performed. Inherit from :class:`Operation`, overload 
-    its methods, and instantiate super to create a new operation. See 
-    the section on extending Augmentor with custom operations at 
+    that can be performed. Inherit from :class:`Operation`, overload
+    its methods, and instantiate super to create a new operation. See
+    the section on extending Augmentor with custom operations at
     :ref:`extendingaugmentor`.
     """
     def __init__(self, probability):
         """
-        All operations must at least have a :attr:`probability` which is 
+        All operations must at least have a :attr:`probability` which is
         initialised when creating the operation's object.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
         :type probability: Float
         """
         self.probability = probability
 
     def __str__(self):
         """
-        Used to display a string representation of the operation, which is 
+        Used to display a string representation of the operation, which is
         used by the :func:`Pipeline.status` to display the current pipeline's
         operations in a human readable way.
-        
-        :return: A string representation of the operation. Can be overridden 
-         if required, for example as is done in the :class:`Rotate` class. 
+
+        :return: A string representation of the operation. Can be overridden
+         if required, for example as is done in the :class:`Rotate` class.
         """
         return self.__class__.__name__
 
     def perform_operation(self, image):
         """
-        Perform the operation on the image. Each operation must at least 
+        Perform the operation on the image. Each operation must at least
         have this function, which accepts an image of type PIL.Image, performs
         its operation, and returns an image of type PIL.Image.
-        
+
         :param image: The image to transform.
         :type image: PIL.Image
         :return: The transformed image of type PIL.Image.
@@ -93,10 +93,10 @@ class HistogramEqualisation(Operation):
     """
     def __init__(self, probability):
         """
-        As there are no further user definable parameters, the class is 
+        As there are no further user definable parameters, the class is
         instantiated using only the :attr:`probability` argument.
-        
-        :param probability: Controls the probability that the operation is 
+
+        :param probability: Controls the probability that the operation is
          performed when it is invoked in the pipeline.
         :type probability: Float
         """
@@ -104,10 +104,10 @@ class HistogramEqualisation(Operation):
 
     def perform_operation(self, image):
         """
-        Performs histogram equalisation on the image passed as an argument 
+        Performs histogram equalisation on the image passed as an argument
         and returns the equalised image. There are no user definable parameters
         for this method.
-        
+
         :param image: The image on which to perform the histogram equalisation.
         :type image: PIL.Image
         :return: The transformed image of type PIL.Image
@@ -126,17 +126,17 @@ class HistogramEqualisation(Operation):
 class Greyscale(Operation):
     """
     This class is used to convert images into greyscale. That is, it converts
-    images into having only shades of grey (pixel value intensities) 
+    images into having only shades of grey (pixel value intensities)
     varying from 0 to 255 which represent black and white respectively.
-    
+
     .. seealso:: The :class:`BlackAndWhite` class.
     """
     def __init__(self, probability):
         """
-        As there are no further user definable parameters, the class is 
+        As there are no further user definable parameters, the class is
         instantiated using only the :attr:`probability` argument.
-        
-        :param probability: Controls the probability that the operation is 
+
+        :param probability: Controls the probability that the operation is
          performed when it is invoked in the pipeline.
         :type probability: Float
         """
@@ -144,9 +144,9 @@ class Greyscale(Operation):
 
     def perform_operation(self, image):
         """
-        Converts the passed image to greyscale and returns the transformed 
+        Converts the passed image to greyscale and returns the transformed
         image. There are no user definable parameters for this method.
-        
+
         :param image: The image to convert to greyscale.
         :type image: PIL.Image
         :return: The transformed image as type PIL.Image
@@ -161,10 +161,10 @@ class Invert(Operation):
     """
     def __init__(self, probability):
         """
-        As there are no further user definable parameters, the class is 
+        As there are no further user definable parameters, the class is
         instantiated using only the :attr:`probability` argument.
-        
-        :param probability: Controls the probability that the operation is 
+
+        :param probability: Controls the probability that the operation is
          performed when it is invoked in the pipeline.
         :type probability: Float
         """
@@ -172,9 +172,9 @@ class Invert(Operation):
 
     def perform_operation(self, image):
         """
-        Negates the image passed as an argument. There are no user definable 
+        Negates the image passed as an argument. There are no user definable
         parameters for this method.
-        
+
         :param image: The image to negate.
         :type image: PIL.Image
         :return: The transformed image as type PIL.Image
@@ -185,24 +185,24 @@ class Invert(Operation):
 class BlackAndWhite(Operation):
     """
     This class is used to convert images into black and white. In other words,
-    into using a 1-bit, monochrome binary colour palette. This is not to be 
+    into using a 1-bit, monochrome binary colour palette. This is not to be
     confused with greyscale, where an 8-bit greyscale pixel intensity range
     is used.
-    
+
     .. seealso:: The :class:`Greyscale` class.
     """
     def __init__(self, probability, threshold):
         """
-        As well as the required :attr:`probability` parameter, a 
+        As well as the required :attr:`probability` parameter, a
         :attr:`threshold` can also be defined to define the cutoff point where
         a pixel is converted to black or white. The :attr:`threshold` defaults
-        to 128 at the user-facing 
-        :func:`~Augmentor.Pipeline.Pipeline.black_and_white` function. 
-        
-        :param probability: Controls the probability that the operation is 
+        to 128 at the user-facing
+        :func:`~Augmentor.Pipeline.Pipeline.black_and_white` function.
+
+        :param probability: Controls the probability that the operation is
          performed when it is invoked in the pipeline.
         :param threshold: A value between 0 and 255 that defines the cut off
-         point where an individual pixel is converted into black or white. 
+         point where an individual pixel is converted into black or white.
         :type probability: Float
         :type threshold: Integer
         """
@@ -211,11 +211,11 @@ class BlackAndWhite(Operation):
 
     def perform_operation(self, image):
         """
-        Convert the image passed as an argument to black and white, 1-bit 
+        Convert the image passed as an argument to black and white, 1-bit
         monochrome. Uses the :attr:`threshold` passed to the constructor
-        to control the cut-off point where a pixel is converted to black or 
+        to control the cut-off point where a pixel is converted to black or
         white.
-        
+
         :param image: The image to convert into monochrome.
         :type image: PIL.Image
         :return: The converted image as type PIL.Image
@@ -228,30 +228,30 @@ class BlackAndWhite(Operation):
 class Skew(Operation):
     """
     This class is used to perform perspective skewing on images. It allows
-    for skewing from a total of 12 different perspectives.  
+    for skewing from a total of 12 different perspectives.
     """
     def __init__(self, probability, skew_type, magnitude):
         """
         As well as the required :attr:`probability` parameter, the type of
-        skew that is performed is controlled using a :attr:`skew_type` and a 
+        skew that is performed is controlled using a :attr:`skew_type` and a
         :attr:`magnitude` parameter. The :attr:`skew_type` controls the
         direction of the skew, while :attr:`magnitude` controls the degree
         to which the skew is performed.
-        
+
         To see examples of the various skews, see :ref:`perspectiveskewing`.
-        
+
         Images are skewed **in place** and an image of the same size is
         returned by this function. That is to say, that after a skew
         has been performed, the largest possible area of the same aspect ratio
-        of the original image is cropped from the skewed image, and this is 
-        then resized to match the original image size. The 
+        of the original image is cropped from the skewed image, and this is
+        then resized to match the original image size. The
         :ref:`perspectiveskewing` section describes this in detail.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
-        :param skew_type: Must be one of ``TILT``, ``TILT_TOP_BOTTOM``, 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
+        :param skew_type: Must be one of ``TILT``, ``TILT_TOP_BOTTOM``,
          ``TILT_LEFT_RIGHT``, or ``CORNER``.
-         
+
          - ``TILT`` will randomly skew either left, right, up, or down.
            Left or right means it skews on the x-axis while up and down
            means that it skews on the y-axis.
@@ -259,12 +259,12 @@ class Skew(Operation):
            words skew along the y-axis.
          - ``TILT_LEFT_RIGHT`` will randomly skew left or right, or in other
            words skew along the x-axis.
-         - ``CORNER`` will randomly skew one **corner** of the image either 
+         - ``CORNER`` will randomly skew one **corner** of the image either
            along the x-axis or y-axis. This means in one of 8 different
            directions, randomly.
-         
-         To see examples of the various skews, see :ref:`perspectiveskewing`.  
-                  
+
+         To see examples of the various skews, see :ref:`perspectiveskewing`.
+
         :param magnitude: The degree to which the image is skewed.
         :type probability: Float
         :type skew_type: String
@@ -276,11 +276,11 @@ class Skew(Operation):
 
     def perform_operation(self, image):
         """
-        Perform the skew on the passed image and returns the transformed 
-        image. Uses the :attr:`skew_type` and :attr:`magnitude` parameters to 
+        Perform the skew on the passed image and returns the transformed
+        image. Uses the :attr:`skew_type` and :attr:`magnitude` parameters to
         control the type of skew to perform as well as the degree to which it
         is performed.
-        
+
         :param image: The image to skew.
         :type image: PIL.Image
         :return: The skewed image as type PIL.Image
@@ -307,15 +307,7 @@ class Skew(Operation):
         #    skew_amount = max_skew_amount
 
         # TODO: Fix this abomination
-        if self.skew_type == "RANDOM":
-            skew = random.choice(["TILT", "TILT_LEFT_RIGHT", "TILT_TOP_BOTTOM", "CORNER"])
-        else:
-            skew = self.skew_type
-
-        # We have two choices now: we tilt in one of four directions
-        # or we skew a corner.
-
-        if skew == "TILT" or skew == "TILT_LEFT_RIGHT" or skew == "TILT_TOP_BOTTOM":
+        if skew == "TILT" or skew == "TILT_LEFT_RIGHT" or skew == "TILT_TOP_BOTTOM" or skew == "TILT_TOP" or skew == "TILT_BOTTOM":
 
             if skew == "TILT":
                 skew_direction = random.randint(0, 3)
@@ -323,6 +315,10 @@ class Skew(Operation):
                 skew_direction = random.randint(0, 1)
             elif skew == "TILT_TOP_BOTTOM":
                 skew_direction = random.randint(2, 3)
+            elif skew == "TILT_TOP":
+                skew_direction = 2
+            elif skew == "TILT_BOTTOM":
+                skew_direction = 3
 
             if skew_direction == 0:
                 # Left Tilt
@@ -413,29 +409,29 @@ class Skew(Operation):
 
 class Rotate(Operation):
     """
-    This class is used to perform rotations on images in multiples of 90 
+    This class is used to perform rotations on images in multiples of 90
     degrees. Arbitrary rotations are handled by the :class:`RotateRange`
     class.
     """
 
     def __init__(self, probability, rotation):
         """
-        As well as the required :attr:`probability` parameter, the 
-        :attr:`rotation` parameter controls the rotation to perform, 
-        which must be one of ``90``, ``180``, ``270`` or ``-1`` (see below). 
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
-        :param rotation: Controls the rotation to perform. Must be one of 
+        As well as the required :attr:`probability` parameter, the
+        :attr:`rotation` parameter controls the rotation to perform,
+        which must be one of ``90``, ``180``, ``270`` or ``-1`` (see below).
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
+        :param rotation: Controls the rotation to perform. Must be one of
          ``90``, ``180``, ``270`` or ``-1``.
-         
+
          - ``90`` rotate the image by 90 degrees.
          - ``180`` rotate the image by 180 degrees.
-         - ``270`` rotate the image by 270 degrees. 
+         - ``270`` rotate the image by 270 degrees.
          - ``-1`` rotate the image randomly by either 90, 180, or 270 degrees.
-        
+
         .. seealso:: For arbitrary rotations, see the :class:`RotateRange` class.
-         
+
         """
         Operation.__init__(self, probability)
         self.rotation = rotation
@@ -447,7 +443,7 @@ class Rotate(Operation):
         """
         Rotate an image by either 90, 180, or 270 degrees, or randomly from
         any of these.
-        
+
         :param image: The image to rotate.
         :type image: PIL.Image
         :return: The rotated image as type PIL.Image
@@ -467,7 +463,7 @@ class RotateRange(Operation):
     Images are rotated **in place** and an image of the same size is
     returned by this function. That is to say, that after a rotation
     has been performed, the largest possible area of the same aspect ratio
-    of the original image is cropped from the skewed image, and this is 
+    of the original image is cropped from the skewed image, and this is
     then resized to match the original image size.
 
     The method by which this is performed is described as follows:
@@ -484,15 +480,15 @@ class RotateRange(Operation):
     """
     def __init__(self, probability, max_left_rotation, max_right_rotation):
         """
-        As well as the required :attr:`probability` parameter, the 
-        :attr:`max_left_rotation` parameter controls the maximum number of 
-        degrees by which to rotate to the left, while the 
+        As well as the required :attr:`probability` parameter, the
+        :attr:`max_left_rotation` parameter controls the maximum number of
+        degrees by which to rotate to the left, while the
         :attr:`max_right_rotation` controls the maximum number of degrees to
-        rotate to the right. 
+        rotate to the right.
 
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
-        :param max_left_rotation: The maximum number of degrees to rotate 
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
+        :param max_left_rotation: The maximum number of degrees to rotate
          the image anti-clockwise.
         :param max_right_rotation: The maximum number of degrees to rotate
          the image clockwise.
@@ -507,11 +503,11 @@ class RotateRange(Operation):
     def perform_operation(self, image):
         """
         Perform the rotation on the passed :attr:`image` and return
-        the transformed image. Uses the :attr:`max_left_rotation` and 
+        the transformed image. Uses the :attr:`max_left_rotation` and
         :attr:`max_right_rotation` passed into the constructor to control
-        the amount of degrees to rotate by. Whether the image is rotated 
+        the amount of degrees to rotate by. Whether the image is rotated
         clockwise or anti-clockwise is chosen at random.
-        
+
         :param image: The image to rotate.
         :type image: PIL.Image
         :return: The rotated image as type PIL.Image
@@ -575,13 +571,13 @@ class Resize(Operation):
         """
         Accepts the required probability parameter as well as parameters
         to control the size of the transformed image.
-         
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
         :param width: The width in pixels to resize the image to.
         :param height: The height in pixels to resize the image to.
-        :param resample_filter: The resample filter to use. Must be one of 
-         the standard PIL types, i.e. ``NEAREST``, ``BICUBIC``, ``ANTIALIAS``, 
+        :param resample_filter: The resample filter to use. Must be one of
+         the standard PIL types, i.e. ``NEAREST``, ``BICUBIC``, ``ANTIALIAS``,
          or ``BILINEAR``.
         :type probability: Float
         :type width: Integer
@@ -597,7 +593,7 @@ class Resize(Operation):
         """
         Resize the passed image and returns the resized image. Uses the
         parameters passed to the constructor to resize the passed image.
-        
+
         :param image: The image to resize.
         :type image: PIL.Image
         :return: The resized image as type PIL.Image
@@ -609,24 +605,24 @@ class Resize(Operation):
 class Flip(Operation):
     """
     This class is used to mirror images through the x or y axes.
-    
-    The class allows an image to be mirrored along either 
+
+    The class allows an image to be mirrored along either
     its x axis or its y axis, or randomly.
     """
     def __init__(self, probability, top_bottom_left_right):
         """
-        The direction of the flip, or whether it should be randomised, is 
+        The direction of the flip, or whether it should be randomised, is
         controlled using the :attr:`top_bottom_left_right` parameter.
-        
-        :param probability: Controls the probability that the operation is 
+
+        :param probability: Controls the probability that the operation is
          performed when it is invoked in the pipeline.
         :param top_bottom_left_right: Controls the direction the image should
-         be mirrored. Must be one of ``LEFT_RIGHT``, ``TOP_BOTTOM``, or 
+         be mirrored. Must be one of ``LEFT_RIGHT``, ``TOP_BOTTOM``, or
          ``RANDOM``.
-         
+
          - ``LEFT_RIGHT`` defines that the image is mirrored along its x axis.
          - ``TOP_BOTTOM`` defines that the image is mirrored along its y axis.
-         - ``RANDOM`` defines that the image is mirrored randomly along 
+         - ``RANDOM`` defines that the image is mirrored randomly along
            either the x or y axis.
         """
         Operation.__init__(self, probability)
@@ -634,9 +630,9 @@ class Flip(Operation):
 
     def perform_operation(self, image):
         """
-        Mirror the image according to the `attr`:top_bottom_left_right` 
+        Mirror the image according to the `attr`:top_bottom_left_right`
         argument passed to the constructor and return the mirrored image.
-        
+
         :param image: The image to mirror.
         :type image: PIL.Image
         :return: The mirrored image as type PIL.Image
@@ -660,19 +656,19 @@ class Crop(Operation):
     """
     def __init__(self, probability, width, height, centre):
         """
-        As well as the always required :attr:`probability` parameter, the 
+        As well as the always required :attr:`probability` parameter, the
         constructor requires a :attr:`width` to control the width of
-        of the area to crop as well as a :attr:`height` parameter 
-        to control the height of the area to crop. Also, whether the 
-        area to crop should be taken from the centre of the image or from a 
+        of the area to crop as well as a :attr:`height` parameter
+        to control the height of the area to crop. Also, whether the
+        area to crop should be taken from the centre of the image or from a
         random location within the image is toggled using :attr:`centre`.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
         :param width: The width in pixels of the area to crop from the image.
         :param height: The height in pixels of the area to crop from the image.
         :param centre: Whether to crop from the centre of the image or a random
-         location within the image, while maintaining the size of the crop 
+         location within the image, while maintaining the size of the crop
          without cropping out of the original image's area.
         :type probability: Float
         :type width: Integer
@@ -688,7 +684,7 @@ class Crop(Operation):
         """
         Crop an area from an image, either from a random location or centred,
         using the dimensions supplied during instantiation.
-        
+
         :param image: The image to crop the area from.
         :type image: PIL.Image
         :return: The cropped area as an image of type PIL.Image
@@ -799,11 +795,11 @@ class CropRandom(Operation):
     """
     def __init__(self, probability, percentage_area):
         """
-        :param probability: Controls the probability that the operation is 
+        :param probability: Controls the probability that the operation is
          performed when it is invoked in the pipeline.
-        :param percentage_area: The percentage area of the original image 
+        :param percentage_area: The percentage area of the original image
          to crop. A value of 0.5 would crop an area that is 50% of the area
-         of the original image's size. 
+         of the original image's size.
         """
         Operation.__init__(self, probability)
         self.percentage_area = percentage_area
@@ -811,7 +807,7 @@ class CropRandom(Operation):
     def perform_operation(self, image):
         """
         Randomly crop the passed image, returning the crop as a new image.
-        
+
         :param image: The image to crop.
         :type image: PIL.Image
         :return: The cropped region as an image of type PIL.Image
@@ -830,29 +826,29 @@ class CropRandom(Operation):
 class Shear(Operation):
     """
     This class is used to shear images, that is to tilt them in a certain
-    direction. Tilting can occur along either the x- or y-axis and in both 
-    directions (i.e. left or right along the x-axis, up or down along the 
+    direction. Tilting can occur along either the x- or y-axis and in both
+    directions (i.e. left or right along the x-axis, up or down along the
     y-axis).
-    
-    Images are sheared **in place** and an image of the same size as the input 
+
+    Images are sheared **in place** and an image of the same size as the input
     image is returned by this class. That is to say, that after a shear
     has been performed, the largest possible area of the same aspect ratio
-    of the original image is cropped from the sheared image, and this is 
-    then resized to match the original image size. The 
+    of the original image is cropped from the sheared image, and this is
+    then resized to match the original image size. The
     :ref:`shearing` section describes this in detail.
-    
+
     For sample code with image examples see :ref:`shearing`.
     """
     def __init__(self, probability, max_shear_left, max_shear_right):
         """
-        The shearing is randomised in magnitude, from 0 to the 
-        :attr:`max_shear_left` or 0 to :attr:`max_shear_right` where the 
+        The shearing is randomised in magnitude, from 0 to the
+        :attr:`max_shear_left` or 0 to :attr:`max_shear_right` where the
         direction is randomised. The shear axis is also randomised
-        i.e. if it shears up/down along the y-axis or 
-        left/right along the x-axis. 
+        i.e. if it shears up/down along the y-axis or
+        left/right along the x-axis.
 
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
         :param max_shear_left: The maximum shear to the left.
         :param max_shear_right: The maximum shear to the right.
         :type probability: Float
@@ -865,9 +861,9 @@ class Shear(Operation):
 
     def perform_operation(self, image):
         """
-        Shears the passed image according to the parameters defined during 
+        Shears the passed image according to the parameters defined during
         instantiation, and returns the sheared image.
-        
+
         :param image: The image to shear.
         :type image: PIL.Image
         :return: The sheared image of type PIL.Image
@@ -980,10 +976,10 @@ class Shear(Operation):
 
 class Scale(Operation):
     """
-    This class is used to increase or decrease images in size by a certain 
-    factor, while maintaining the aspect ratio of the original image. 
-    
-    .. seealso:: The :class:`Resize` class for resizing images by 
+    This class is used to increase or decrease images in size by a certain
+    factor, while maintaining the aspect ratio of the original image.
+
+    .. seealso:: The :class:`Resize` class for resizing images by
      **dimensions**, and hence will not necessarily maintain the aspect ratio.
 
     This function will return images that are **larger** than the input
@@ -991,12 +987,12 @@ class Scale(Operation):
     """
     def __init__(self, probability, scale_factor):
         """
-        As the aspect ratio is always kept constant, only a 
+        As the aspect ratio is always kept constant, only a
         :attr:`scale_factor` is required for scaling the image.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
-        :param scale_factor: The factor by which to scale, where 1.5 would 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
+        :param scale_factor: The factor by which to scale, where 1.5 would
          result in an image scaled up by 150%.
         :type probability: Float
         :type scale_factor: Float
@@ -1006,9 +1002,9 @@ class Scale(Operation):
 
     def perform_operation(self, image):
         """
-        Scale the passed :attr:`image` by the factor specified during 
+        Scale the passed :attr:`image` by the factor specified during
         instantiation, returning the scaled image.
-        
+
         :param image: The image to scale.
         :type image: PIL.Image
         :return: The scaled image as type PIL.Image
@@ -1027,21 +1023,21 @@ class Distort(Operation):
     """
     def __init__(self, probability, grid_width, grid_height, magnitude):
         """
-        As well as the probability, the granularity of the distortions 
+        As well as the probability, the granularity of the distortions
         produced by this class can be controlled using the width and
         height of the overlaying distortion grid. The larger the height
         and width of the grid, the smaller the distortions. This means
         that larger grid sizes can result in finer, less severe distortions.
-        As well as this, the magnitude of the distortions vectors can 
+        As well as this, the magnitude of the distortions vectors can
         also be adjusted.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
         :param grid_width: The width of the gird overlay, which is used
          by the class to apply the transformations to the image.
         :param grid_height: The height of the gird overlay, which is used
          by the class to apply the transformations to the image.
-        :param magnitude: Controls the degree to which each distortion is 
+        :param magnitude: Controls the degree to which each distortion is
          applied to the overlaying distortion grid.
         :type probability: Float
         :type grid_width: Integer
@@ -1059,8 +1055,8 @@ class Distort(Operation):
         """
         Distorts the passed image according to the parameters supplied during
         instantiation, returning the newly distorted image.
-        
-        :param image: The image to be distorted. 
+
+        :param image: The image to be distorted.
         :type image: PIL.Image
         :return: The distorted image as type PIL.Image
         """
@@ -1160,23 +1156,23 @@ class GaussianDistortion(Operation):
     """
     def __init__(self, probability, grid_width, grid_height, magnitude, corner, method, mex, mey, sdx, sdy):
         """
-        As well as the probability, the granularity of the distortions 
+        As well as the probability, the granularity of the distortions
         produced by this class can be controlled using the width and
         height of the overlaying distortion grid. The larger the height
         and width of the grid, the smaller the distortions. This means
         that larger grid sizes can result in finer, less severe distortions.
-        As well as this, the magnitude of the distortions vectors can 
+        As well as this, the magnitude of the distortions vectors can
         also be adjusted.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
         :param grid_width: The width of the gird overlay, which is used
          by the class to apply the transformations to the image.
         :param grid_height: The height of the gird overlay, which is used
          by the class to apply the transformations to the image.
-        :param magnitude: Controls the degree to which each distortion is 
+        :param magnitude: Controls the degree to which each distortion is
          applied to the overlaying distortion grid.
-        :param corner: which corner of picture to distort. 
+        :param corner: which corner of picture to distort.
          Possible values: "bell"(circular surface applied), "ul"(upper left),
          "ur"(upper right), "dl"(down left), "dr"(down right).
         :param method: possible values: "in"(apply max magnitude to the chosen
@@ -1224,8 +1220,8 @@ class GaussianDistortion(Operation):
         """
         Distorts the passed image according to the parameters supplied during
         instantiation, returning the newly distorted image.
-        
-        :param image: The image to be distorted. 
+
+        :param image: The image to be distorted.
         :type image: PIL.Image
         :return: The distorted image as type PIL.Image
         """
@@ -1283,16 +1279,16 @@ class GaussianDistortion(Operation):
         for i in range((vertical_tiles * horizontal_tiles) - 1):
             if i not in last_row and i not in last_column:
                 polygon_indices.append([i, i + 1, i + horizontal_tiles, i + 1 + horizontal_tiles])
-         
+
         def sigmoidf(x,y, sdx=0.05, sdy=0.05, mex=0.5, mey=0.5, const=1):
             #print(sdx, sdy, mex, mey, const)
-            sigmoid = lambda x1, y1:  (const * (math.exp(-(((x1-mex)**2)/sdx + ((y1-mey)**2)/sdy) )) + max(0,-const) - max(0, const)) 
+            sigmoid = lambda x1, y1:  (const * (math.exp(-(((x1-mex)**2)/sdx + ((y1-mey)**2)/sdy) )) + max(0,-const) - max(0, const))
             xl = np.linspace(0,1)
             yl =  np.linspace(0, 1)
             X, Y = np.meshgrid(xl, yl)
-        
+
             Z = np.vectorize(sigmoid)(X, Y)
-            #res = (const * (math.exp(-((x-me)**2 + (y-me)**2)/sd )) + max(0,-const) - max(0, const)) 
+            #res = (const * (math.exp(-((x-me)**2 + (y-me)**2)/sd )) + max(0,-const) - max(0, const))
             mino = np.amin(Z)
             maxo = np.amax(Z)
             res = sigmoid(x, y)
@@ -1311,20 +1307,20 @@ class GaussianDistortion(Operation):
             else:
                 if method=="out":
                    const=-1
-                else: 
+                else:
                    print('Mehtod can be "out" or "in", "in" used as default')
                    const=1
             res = sigmoidf(x=new_x, y=new_y,sdx=sdx, sdy=sdy, mex=mex, mey=mey, const=const)
             #print(x, y, new_x, new_y, self.magnitude,  res)
             return res
 
-        
+
         for a, b, c, d in polygon_indices:
             #dx = random.randint(-self.magnitude, self.magnitude)
             #dy = random.randint(-self.magnitude, self.magnitude)
             x1, y1, x2, y2, x3, y3, x4, y4 = polygons[a]
             #sigmax = sigmoid(x3, y3)
-            
+
             sigmax= corner(x=x3/w, y=y3/h, corner=self.corner, method=self.method, sdx=self.sdx, sdy=self.sdy, mex=self.mex, mey=self.mey)
             dx = np.random.normal(0, sigmax, 1)[0]
             dy = np.random.normal(0, sigmax, 1)[0]
@@ -1365,17 +1361,17 @@ class Zoom(Operation):
     """
     def __init__(self, probability, min_factor, max_factor):
         """
-        The amount of zoom applied is randomised, from between 
+        The amount of zoom applied is randomised, from between
         :attr:`min_factor` and :attr:`max_factor`. Set these both to the same
         value to always zoom by a constant factor.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
-        :param min_factor: The minimum amount of zoom to apply. Set both the 
-         :attr:`min_factor` and :attr:`min_factor` to the same values to zoom 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
+        :param min_factor: The minimum amount of zoom to apply. Set both the
+         :attr:`min_factor` and :attr:`min_factor` to the same values to zoom
          by a constant factor.
-        :param max_factor: The maximum amount of zoom to apply. Set both the 
-         :attr:`min_factor` and :attr:`min_factor` to the same values to zoom 
+        :param max_factor: The maximum amount of zoom to apply. Set both the
+         :attr:`min_factor` and :attr:`min_factor` to the same values to zoom
          by a constant factor.
         :type probability: Float
         :type min_factor: Float
@@ -1388,7 +1384,7 @@ class Zoom(Operation):
     def perform_operation(self, image):
         """
         Zooms/scales the passed image and returns the new image.
-        
+
         :param image: The image to be zoomed.
         :type image: PIL.Image
         :return: The zoomed in image as type PIL.Image
@@ -1432,12 +1428,12 @@ class ZoomRandom(Operation):
         Zooms into a random area of the image, rather than the centre of
         the image, as is done by :class:`Zoom`. The zoom factor is fixed
         unless :attr:`max_zoom` is given.
-        
-        :param probability: Controls the probability that the operation is 
-         performed when it is invoked in the pipeline. 
+
+        :param probability: Controls the probability that the operation is
+         performed when it is invoked in the pipeline.
         :param min_zoom: A value between 0.1 and 1 that represents the
          area that will be cropped, with 1 meaning the entire area of the
-         image will be cropped and 0.1 mean 10% of the area of the image 
+         image will be cropped and 0.1 mean 10% of the area of the image
          will be cropped, before zooming.
         :param max_zoom: If set, the effective zoom value will be randomly
          chosen between :attr:`min_zoom` and :attr:`max_zoom`
@@ -1448,11 +1444,11 @@ class ZoomRandom(Operation):
 
     def perform_operation(self, image):
         """
-        Randomly zoom into the passed :attr:`image` by first cropping the image 
-        based on the :attr:`percentage_area` argument, and then resizing the 
-        image to match the size of the input area. 
-        
-        Effectively, you are zooming in on random areas of the image. 
+        Randomly zoom into the passed :attr:`image` by first cropping the image
+        based on the :attr:`percentage_area` argument, and then resizing the
+        image to match the size of the input area.
+
+        Effectively, you are zooming in on random areas of the image.
 
         :param image: The image to crop an area from.
         :type image: PIL.Image
@@ -1608,9 +1604,9 @@ class Custom(Operation):
 
     def perform_operation(self, image):
         """
-        Perform the custom operation on the passed image, returning the 
+        Perform the custom operation on the passed image, returning the
         transformed image.
-        
+
         :param image: The image to perform the custom operation on.
         :return: The transformed image (other functions in the pipeline
          will expect an image of type PIL.Image)
